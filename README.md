@@ -35,10 +35,11 @@ Keduanya dirancang untuk menerima pesan dari client dan mengirimkannya kembali (
         | write()      | -------------------> | read()         |
         | read()       | <------------------- | write()        |
          ------------                          ---------------
-```
+
 ➡ Client melakukan 3-way handshake ke server sebelum bisa bertukar data.
 ➡ Koneksi bersifat permanen sampai salah satu memutuskan.
 ➡ Server mendengarkan koneksi dan menerima satu-per-satu.
+```
 
 ### Skema Koneksi UDP (Connectionless)
 ```text
@@ -48,10 +49,11 @@ Keduanya dirancang untuk menerima pesan dari client dan mengirimkannya kembali (
         | sendto()     | -------------------> | recvfrom()     |
         | recvfrom()   | <------------------- | sendto()       |
          ------------                          ---------------
-```
+
 ➡ Tidak ada handshake: client langsung mengirim pesan ke alamat tujuan.
 ➡ Server tidak tahu siapa yang akan mengirim, hanya menunggu paket.
 ➡ Hubungan tidak permanen: seperti "sekali kirim, selesai."
+```
 
 ### Struktur Program
 #### 1. TCP Echo Server dan Client
