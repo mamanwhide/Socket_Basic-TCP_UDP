@@ -2,7 +2,7 @@
 import socket
 
 HOST = '127.0.0.1'
-PORT = 12334
+PORT = int(input("Masukkan port untuk websock UDP: ")) 
 
 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server_socket:
     server_socket.bind((HOST, PORT))

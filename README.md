@@ -1,63 +1,72 @@
-# Socket Programming: TCP vs UDP - Echo Client/Server in Python
+# 🧠 Socket Programming: TCP vs UDP - Echo Client/Server in Python
 
-## 📌 Deskripsi Singkat
-Proyek ini mendemonstrasikan **perbedaan antara TCP dan UDP** dalam komunikasi jaringan menggunakan Python. Program terdiri dari dua jenis echo server dan client:
-- **TCP Echo Server/Client**
-- **UDP Echo Server/Client**
+##  Deskripsi Singkat
+Proyek ini mendemonstrasikan **perbedaan fundamental antara TCP dan UDP** dalam komunikasi jaringan menggunakan Python.
 
-Keduanya dirancang untuk menerima pesan dari client dan mengirimkannya kembali (echo), namun dengan karakteristik protokol yang berbeda.
+Program terdiri dari dua jenis echo server dan client:
+- ✅ **TCP Echo Server/Client**
+- ✅ **UDP Echo Server/Client**
 
----
-
-## ⚖️ Perbedaan TCP dan UDP secara Sederhana
-
-| Aspek             | TCP (Transmission Control Protocol)                            | UDP (User Datagram Protocol)                        |
-|------------------|------------------------------------------------------------------|-----------------------------------------------------|
-| **Tipe Protokol** | Connection-oriented (butuh “jabat tangan” dulu)                 | Connectionless (langsung kirim saja)               |
-| **Keandalan**     | Sangat andal: pesan dikirim ulang jika hilang                   | Tidak andal: pesan bisa hilang tanpa pemberitahuan |
-| **Kecepatan**     | Lebih lambat karena ada proses kontrol koneksi                  | Lebih cepat karena minim proses kontrol            |
-| **Penggunaan Umum** | Web, Email, File Transfer                                      | Video Streaming, Voice Call, Gaming                |
-| **Contoh Nyata**  | Seperti menelpon—ada halo-halo dulu, baru ngobrol               | Seperti kirim surat langsung tanpa konfirmasi      |
+Keduanya dirancang untuk menerima pesan dari client dan mengirimkannya kembali (**echo**), namun dengan karakteristik protokol yang sangat berbeda.
 
 ---
 
-## 🧪 Struktur Program
+##  Perbandingan TCP vs UDP
 
-### 1. **TCP Echo Server dan Client**
-- Server menunggu koneksi dari client.
-- Setelah koneksi dibuat, client mengirim pesan.
-- Server membalas pesan yang sama (echo).
-- Jika client mengirim `exit`, koneksi ditutup.
-
-### 2. **UDP Echo Server dan Client**
-- Tidak perlu koneksi terlebih dahulu.
-- Client langsung mengirim pesan ke server.
-- Server membalas pesan yang sama (echo).
-- Tidak ada koneksi permanen, hanya pengiriman paket.
+| Aspek              | TCP (Transmission Control Protocol)                            | UDP (User Datagram Protocol)                        |
+|-------------------|------------------------------------------------------------------|-----------------------------------------------------|
+| **Tipe Protokol**  | Connection-oriented (harus "kenalan" dulu)                      | Connectionless (langsung kirim saja)               |
+| **Keandalan**      | Andal: menjamin pesan sampai (dengan urutan benar)              | Tidak andal: pesan bisa hilang/tidak berurutan     |
+| **Kecepatan**      | Relatif lambat karena verifikasi koneksi                        | Cepat karena tanpa overhead koneksi                |
+| **Overhead**       | Tinggi (handshake, ACK, re-send)                                | Rendah (langsung kirim paket)                      |
+| **Penggunaan Umum**| Web, Email, FTP, SSH                                             | Streaming video, VoIP, DNS, gaming real-time       |
+| **Analogi Nyata**  | Seperti telepon: ada salam, lalu bicara                         | Seperti walkie-talkie: langsung bicara             |
 
 ---
 
-## 🚀 Menjalankan Program
+## Cara Kerja TCP vs UDP secara Visual
 
-### A. Jalankan TCP Server
-```bash
-python3 tcp_echo_server.py
+### Skema Koneksi TCP (Connection-Oriented)
+```text
+          TCP Client                             TCP Server
+         ------------                          ---------------
+        | socket()     |                      | socket()       |
+        | connect()    | <--- Handshake ----> | accept()       |
+        | write()      | -------------------> | read()         |
+        | read()       | <------------------- | write()        |
+         ------------                          ---------------
 ```
+➡ Client melakukan 3-way handshake ke server sebelum bisa bertukar data.
+➡ Koneksi bersifat permanen sampai salah satu memutuskan.
+➡ Server mendengarkan koneksi dan menerima satu-per-satu.
 
-### B. Jalankan TCP Client
-```bash
-python3 tcp_echo_client.py
+### Skema Koneksi UDP (Connectionless)
+```text
+          UDP Client                             UDP Server
+         ------------                          ---------------
+        | socket()     |                      | socket()       |
+        | sendto()     | -------------------> | recvfrom()     |
+        | recvfrom()   | <------------------- | sendto()       |
+         ------------                          ---------------
 ```
+➡ Tidak ada handshake: client langsung mengirim pesan ke alamat tujuan.
+➡ Server tidak tahu siapa yang akan mengirim, hanya menunggu paket.
+➡ Hubungan tidak permanen: seperti "sekali kirim, selesai."
 
-### C. Jalankan UDP Server
-```bash
-python3 udp_echo_server.py
-```
+### Struktur Program
+#### 1. TCP Echo Server dan Client
+- Server membuat socket, bind ke alamat & port, lalu listen().
+- Server memanggil accept() untuk menerima koneksi.
+- Client melakukan connect() dan mengirim pesan.
+- Server menerima (recv) lalu membalas (send) kembali ke client.
+- Koneksi ditutup saat client mengetik exit.
 
-### D. Jalankan UDP Client
-```bash
-python3 udp_echo_client.py
-```
+#### 2. UDP Echo Server dan Client
+- Server membuat socket dan bind ke alamat & port.
+- Client langsung mengirim data ke server menggunakan sendto().
+- Server menerima data (recvfrom()), mencetak, lalu membalas (sendto()).
+- Tidak ada sesi atau koneksi permanen — setiap paket berdiri sendiri.
 
-### Kesimpulan
-TCP saat anda membutuhkan KEANDALAN, UDP saat anda membutuhkan KECEPATAN
+### Penutup: Kapan menggunakan TCP dan UDP?
+- Gunakan TCP jika perlu keandalan: website, login, pengiriman data penting.
+- Gunakan UDP jika perlu kecepatan dan bisa menoleransi kehilangan: video call, game online, live Sosmed.
